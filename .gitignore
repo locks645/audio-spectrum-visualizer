@@ -1,0 +1,104 @@
+# Compiled object files
+*.o
+*.ko
+*.obj
+
+# Compiled dynamic libraries
+*.so
+*.so.*
+
+# Compiled static libraries
+*.a
+*.lib
+
+# Executables
+*.out
+*.exe
+*.dll
+
+# Debugging files
+*.dSYM/
+*.dmp
+*.stackdump
+
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+*.bak
+*.tmp
+*.log
+
+# Autotools-generated files
+Makefile
+Makefile.in
+aclocal.m4
+compile
+config.log
+config.status
+configure
+depcomp
+install-sh
+libtool
+ltmain.sh
+m4/
+missing
+stamp-h1
+
+# CTags/TAGS
+tags
+TAGS
+
+# GNU Global files
+GPATH
+GRTAGS
+GTAGS
+
+# Build directories
+build/
+bin/
+debug/
+release/
+
+# Linux Desktop files and caches
+*.desktop
+*.directory
+.cache/
+.local/
+.config/
+
+# Miscellaneous system files
+.DS_Store
+Thumbs.db
+*.lock
+
+# Backup files
+*.old
+*.orig
+*.rej
+*.bak
+
+# Temporary files
+*.tmp
+*.temp
+*.~*
+
+# Test binaries and data
+test-output/
+*.gcda
+*.gcno
+*.gcov
+*.profraw
+*.profdata
+
+# Node.js dependencies (if used for tooling)
+node_modules/
+
+# Python environment (if used for tooling)
+__pycache__/
+*.py[cod]
+*.pyo
+.env/
+.venv/
