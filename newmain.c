@@ -109,3 +109,63 @@ void TC0_Handler(void) {
     // might need to disable interrupts until done, will miss a few samples if takes too long?
     
     ...
+}
+
+static void configure_tc(void) {
+	uint32_t ul_sysclk = sysclk_get_cpu_hz(); // Get system clock speed
+	uint32_t ul_div;
+	uint32_t ul_tcclks;
+	
+	// Enable the peripheral clock for TC0
+	pmc_set_writeprotect(false);
+	pmc_enable_periph_clk(ID_TC0);
+
+	// Find the best MCK divisor for 44.1kHz frequency
+	tc_find_mck_divisor(44100, ul_sysclk, &ul_div, &ul_tcclks, ul_sysclk);
+
+	// Initialize TC0, Channel 0 with the selected clock and enable compare match trigger
+	tc_init(TC0, 0, ul_tcclks | TC_CMR_CPCTRG);
+
+	// Set the RC value to generate an interrupt every 44.1kHz
+	tc_write_rc(TC0, 0, (ul_sysclk / ul_div) / 44100);
+
+	// Enable the interrupt on RC compare match
+	NVIC_EnableIRQ((IRQn_Type) ID_TC0); // Enable the TC0 interrupt in NVIC
+	tc_enable_interrupt(TC0, 0, TC_IER_CPCS); // Enable interrupt for RC compare match
+
+	// Start the timer
+	tc_start(TC0, 0);
+}
+
+
+static void configure_adc(void) {
+	pmc_enable_periph_clk(ID_ADC);
+	adc_init(ADC, sysclk_get_main_hz(), ADC_FREQ_MAX, ADC_STARTUP_FAST);
+	adc_configure_timing(ADC, 0, ADC_SETTLING_TIME_3, 1);     // Set timings - standard values
+	adc_enable_channel(ADC, ADC_CHANNEL_0);
+    adc_enable_channel(ADC, ADC_CHANNEL_1);
+    adc_enable_channel(ADC, ADC_CHANNEL_2);
+}
+
+// static void configure_dac(void) {
+// 	sysclk_enable_peripheral_clock(ID_DACC);
+// 	dacc_reset(DACC);
+// 	dacc_disable_trigger(DACC);
+// 	dacc_set_transfer_mode(DACC, 0);
+// 	dacc_set_channel_selection(DACC, 1);
+// 	dacc_enable_channel(DACC,1);
+// }
+
+int main(void) {
+	sysclk_init();
+	board_init();
+	
+	initialize_coef();
+	
+	configure_tc();
+	configure_adc();
+	// configure_dac();
+	// configure led stuff
+	
+	while (true) {}
+}
