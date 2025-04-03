@@ -176,3 +176,27 @@ int main(void) {
 	
 	while (true) {}
 }
+
+
+
+
+
+
+
+
+
+
+
+//	pmc_enable_periph_clk(ID_PIOB);
+//	pio_set_output(PIOB, PIO_PB27, LOW, DISABLE, ENABLE);
+
+
+/*void TC0_Handler(void) {
+	volatile uint32_t ul_dummy;
+	ul_dummy = tc_get_status(TC0, 0);
+	if (pio_get_output_data_status(PIOB, PIO_PB27)) {
+		pio_clear(PIOB, PIO_PB27);
+		} else {
+		pio_set(PIOB, PIO_PB27);
+	}
+}*/
