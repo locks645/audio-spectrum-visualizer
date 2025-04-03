@@ -2,7 +2,7 @@
  * fixedpointarith.h
  *
  * Created: 11/22/2024 7:16:52 PM
- *  Author: Ryan
+ *  Author: latent
  */ 
 
 
