@@ -1,109 +1,75 @@
 /*
- * fixedpointarith.h
+ * fixedpointarith.c
  *
- * Created: 3/5/2025 4:26:59 PM
+ * Created: 3/5/2025 4:26:27 PM
  *  Author: latent
  */ 
-
-
-#ifndef FIXEDPOINTARITH_H_
-#define FIXEDPOINTARITH_H_
-
 #include <stdint.h>
 
-// Define fixed-point type (Q8.24 format)
-typedef int32_t fix_t;
+//Q8.24
 
-// Fixed-point limits (Q8.24 format)
+typedef int32_t fix_t;
 #define FIXP_MAX 0x7FFFFFFF
 #define FIXP_MIN 0x80000000
 
-/**
- * @brief Saturates a 64-bit value to the Q8.24 fixed-point range.
- * @param value A 64-bit integer value.
- * @return Saturated Q8.24 fixed-point value.
- */
-fix_t saturate(int64_t value);
+fix_t saturate(int64_t value) {
+	if (value > (int32_t)FIXP_MAX) return FIXP_MAX;
+	else if (value < (int32_t)FIXP_MIN) return FIXP_MIN;
+	else return (fix_t)value;
+}
 
-/**
- * @brief Adds two Q8.24 fixed-point numbers.
- * @param a First operand.
- * @param b Second operand.
- * @return Sum of a and b as a Q8.24 fixed-point number.
- */
-fix_t fix_add(fix_t a, fix_t b);
+fix_t fix_add(fix_t a, fix_t b) {
+	int64_t result = (int64_t)a + b;
+	return saturate(result);
+}
 
-/**
- * @brief Subtracts two Q8.24 fixed-point numbers.
- * @param a First operand.
- * @param b Second operand.
- * @return Difference of a and b as a Q8.24 fixed-point number.
- */
-fix_t fix_sub(fix_t a, fix_t b);
+fix_t fix_sub(fix_t a, fix_t b) {
+	int64_t result = (int64_t)a - b;
+	return saturate(result);
+}
 
-/**
- * @brief Multiplies two Q8.24 fixed-point numbers.
- * @param a First operand.
- * @param b Second operand.
- * @return Product of a and b as a Q8.24 fixed-point number.
- */
-fix_t fix_mul(fix_t a, fix_t b);
+fix_t fix_mul(fix_t a, fix_t b) {
+	int64_t result = ((int64_t)a * b) >> 24;
+	return saturate(result);
+}
 
-/**
- * @brief Divides two Q8.24 fixed-point numbers.
- * @param a Dividend.
- * @param b Divisor.
- * @return Quotient of a and b as a Q8.24 fixed-point number.
- */
-fix_t fix_div(fix_t a, fix_t b);
+fix_t fix_div(fix_t a, fix_t b) {
+	if (b == 0) { return (a >= 0) ? FIXP_MAX : FIXP_MIN; }    // Division by zero, return maximum value
+	int64_t result = ((int64_t)a << 24) / b;
+	return result;
+}
 
-/**
- * @brief Converts an integer to a Q8.24 fixed-point number.
- * @param in Integer value.
- * @return Q8.24 fixed-point representation of the input.
- */
-fix_t int_to_fix(int32_t in);
+fix_t int_to_fix(int32_t in) {
+	return in << 24;
+}
 
-/**
- * @brief Converts a Q8.24 fixed-point number to an integer.
- * @param in Q8.24 fixed-point value.
- * @return Integer representation of the input.
- */
-int32_t fix_to_int(fix_t in);
+int32_t fix_to_int(fix_t in) {
+	return (in >> 24) & 0x000000FF;
+}
 
-/**
- * @brief Converts a floating-point number to a Q8.24 fixed-point number.
- * @param in Floating-point value.
- * @return Q8.24 fixed-point representation of the input.
- */
-fix_t float_to_fix(float in);
+float fix_to_float(fix_t in) {
+	return (float)in / (1 << 24);
+}
 
-/**
- * @brief Converts a Q8.24 fixed-point number to a floating-point number.
- * @param in Q8.24 fixed-point value.
- * @return Floating-point representation of the input.
- */
-float fix_to_float(fix_t in);
-
-/**
- * @brief Converts a 12-bit unsigned integer to a normalized Q8.24 fixed-point number (-1.0 to 1.0).
- * @param in 12-bit unsigned integer (0 to 4095).
- * @return Q8.24 fixed-point normalized value.
- */
-fix_t uint_to_normalized_fix(uint32_t in);
-
-// same as above but 0 to 1
-fix_t uint_to_positive_fix(uint32_t in);
-
-/**
- * @brief Converts a normalized Q8.24 fixed-point number (-1.0 to 1.0) to a 12-bit unsigned integer.
- * @param in Q8.24 fixed-point normalized value.
- * @return 12-bit unsigned integer (0 to 4095).
- */
-uint32_t fix_to_normalized_int(fix_t in);
-
-// fixed point absolute value
-fix_t fix_abs(fix_t a);
+fix_t float_to_fix(float in) {
+	if (in > 127.99999994f) in = 127.99999994f;
+	else if (in < -128.0f) in = -128.0f;
+	return (int32_t)(in * (1 << 24));
+}
 
 
-#endif /* FIXEDPOINTARITH_H_ */
+fix_t uint_to_normalized_fix(uint32_t in) {
+	return ((int32_t)in - 2048) << 13;
+}
+
+fix_t uint_to_positive_fix(uint32_t in) {
+	return in << 12;
+}
+
+uint32_t fix_to_normalized_int(fix_t in) {
+	return ((in >> 13) + 2048) & 0xFFF;
+}
+
+fix_t fix_abs(fix_t a) {
+	return (a < 0) ? -a : a;
+}
