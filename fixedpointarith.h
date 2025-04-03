@@ -1,7 +1,7 @@
 /*
  * fixedpointarith.h
  *
- * Created: 11/22/2024 7:16:52 PM
+ * Created: 3/5/2025 4:26:59 PM
  *  Author: latent
  */ 
 
@@ -92,6 +92,9 @@ float fix_to_float(fix_t in);
  */
 fix_t uint_to_normalized_fix(uint32_t in);
 
+// same as above but 0 to 1
+fix_t uint_to_positive_fix(uint32_t in);
+
 /**
  * @brief Converts a normalized Q8.24 fixed-point number (-1.0 to 1.0) to a 12-bit unsigned integer.
  * @param in Q8.24 fixed-point normalized value.
@@ -99,7 +102,8 @@ fix_t uint_to_normalized_fix(uint32_t in);
  */
 uint32_t fix_to_normalized_int(fix_t in);
 
-
+// fixed point absolute value
+fix_t fix_abs(fix_t a);
 
 
 #endif /* FIXEDPOINTARITH_H_ */
