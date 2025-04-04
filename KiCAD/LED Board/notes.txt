@@ -1,0 +1,3 @@
+KiCAD 9.0 PCB and schematic files
+Rough draft. Spacing might not be accurate.
+10 inch tall, 8 inch wide
