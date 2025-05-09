@@ -1,3 +1,4 @@
 KiCAD 9.0 PCB and schematic files
-Rough draft. Spacing might not be accurate.
+Placement of CTRL IN and CTRL OUT was quickly made, check traces.
+Spaced out 0.58 in apart.
 10 inch tall, 8 inch wide

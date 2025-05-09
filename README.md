@@ -1,3 +1,3 @@
 # audio-spectrum-visualizer
 
-Database for ASV code only. 
+SDSU Senior Design 2024-2025, Team 14 Audio Spectrum Visualizer
